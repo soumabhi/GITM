@@ -1,103 +1,143 @@
 # 👻 Ghost in the Machine (GITM)
 
-### Your computer has a little ghost. It only wakes up when you're busy.
+### A little ghost. A lot of personality. Always local.
 
-A tiny desktop companion. A little bit of personality. A machine that finally reacts to you.
+**Ghost in the Machine (GITM)** is a local-first Windows desktop companion that reacts to what you do on your computer.
 
-**Ghost in the Machine (GITM)** is a local-first Windows desktop application that transforms everyday computer interactions into playful animated moments. Whether you're typing, copying, dragging files, or stepping away from your keyboard, your ghost quietly observes the type of activity and occasionally makes an appearance.
+It stays invisible when nothing is happening. Start typing, copy something, drag a file, or leave your computer idle — and your little ghost briefly appears with an animation. Give it a personality with optional locally powered AI dialogue using Gemma 3.
 
-It peeks out. It reacts. It sometimes talks. Then it disappears.
+No cloud account. No permanent mascot covering your screen. Just a tiny ghost that comes alive when your computer does.
 
-No cloud accounts. No unnecessary background windows. No permanently stuck mascot. Just a little ghost living inside your desktop.
+---
+
+## 🎬 Watch GITM in Action
 
 <p align="center">
-  <a href="https://youtu.be/Od1qMNbtQxE">
-    <img src="https://img.youtube.com/vi/Od1qMNbtQxE/maxresdefault.jpg" alt="Ghost in the Machine - Watch the Demo" width="85%">
+  <a href="https://youtu.be/mtokemH5_Vg">
+    <img src="https://img.youtube.com/vi/mtokemH5_Vg/maxresdefault.jpg" width="85%" alt="Ghost in the Machine - Demo 1">
   </a>
   <br>
-  <strong>▶ Watch GITM in action</strong>
-  <br>
-  <sub>Click the preview to watch the full demonstration.</sub>
+  <strong>▶ Watch Demo 1</strong>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Platform-Windows-0078D4?style=for-the-badge&logo=windows" alt="Windows">
-  <img src="https://img.shields.io/badge/Python-Engine-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
-  <img src="https://img.shields.io/badge/Electron-Studio-47848F?style=for-the-badge&logo=electron&logoColor=white" alt="Electron">
-  <img src="https://img.shields.io/badge/AI-Local%20Gemma-8E75B2?style=for-the-badge" alt="Local AI">
-  <img src="https://img.shields.io/badge/Privacy-Local%20First-2EA44F?style=for-the-badge" alt="Local First">
+  <a href="https://youtu.be/Od1qMNbtQxE">
+    <img src="https://img.youtube.com/vi/Od1qMNbtQxE/maxresdefault.jpg" width="85%" alt="Ghost in the Machine - Demo 2">
+  </a>
+  <br>
+  <strong>▶ Watch Demo 2</strong>
 </p>
 
 ---
 
-## ✨ The idea
+## ✨ What Makes GITM Different?
 
-What if your computer had a little companion that responded to the things you did?
+Most desktop companions are always visible, waiting for attention.
 
-Not another chatbot. Not another productivity dashboard. Not another animated wallpaper.
+GITM takes a different approach.
 
-Something that feels alive without demanding your attention.
+It observes computer activity through lightweight event detection and reacts only when something interesting happens. Its animations are temporary, its personality is configurable, and its AI interaction can run entirely on your local machine.
 
-GITM explores a different kind of desktop experience: **event-driven character interactions.**
+- 👻 **Event-driven appearances** — The ghost reacts to typing, copying, dragging, and idle activity.
+- 🎭 **Animated personality** — Import your own sprite sheets and customize how the ghost behaves.
+- 🧠 **Optional local AI** — Let Gemma 3 generate short contextual dialogue through Ollama.
+- 🐾 **Interactive pet mode** — Summon your ghost anywhere on the screen.
+- 🎨 **Multiple looks and projects** — Configure different characters and animation sets.
+- 🔒 **Privacy-first architecture** — No typed text, clipboard contents, or screen contents are uploaded.
+- 🖥️ **Native desktop experience** — A transparent, always-on-top, click-through overlay that doesn't steal focus.
 
-The ghost doesn't need to understand everything happening on your screen. It only needs to know that something happened.
+## 🖥️ Two Parts, One Ghost
 
-You control its personality, appearance, behaviour, animations, and whether it is allowed to speak.
+### 1. Studio — Electron + React
 
-## 👻 Features
+The Studio is the control center for your ghost.
 
-### ⌨️ 1. Action-based ghost interactions
+Use it to configure:
 
-Your ghost reacts to supported desktop events.
+- Enable or disable individual reactions.
+- Import custom PNG sprite sheets.
+- Configure animation size, opacity, and speed.
+- Set individual cooldowns.
+- Enable or disable Gemma dialogue for each action.
+- Manage multiple projects and character looks.
+- Configure the ghost's appearance and behavior.
 
-| Action | What happens |
+### 2. Engine — Python + Qt
+
+The Engine runs quietly in the Windows system tray.
+
+It handles:
+
+- Keyboard, mouse, clipboard, and folder activity events.
+- Animation playback and positioning.
+- Transparent desktop overlays.
+- Pet behavior and interactions.
+- Cooldowns and action configuration.
+- Optional local AI dialogue.
+- Local progression and state management.
+
+The Studio configures the experience; the Engine brings it to life.
+
+## 👻 Meet Your Ghost
+
+### Typing Reaction
+
+When you start typing, the ghost peeks into your screen from an edge.
+
+It can appear from the left or right at an angle, or upside-down from the top. It stays briefly while you're typing and slides away when you stop.
+
+### Copy & Shortcut Reactions
+
+Copy something or trigger an enabled shortcut, and the ghost reacts with its configured animation.
+
+Each action can have its own visibility setting and AI dialogue permission.
+
+### Drag & Move
+
+When you drag or move something, the ghost can briefly follow the movement.
+
+### Idle Mode
+
+Leave your computer alone for a while, and the ghost can appear with a soft swarm-style animation.
+
+### Interactive Pet Mode
+
+Triple-click anywhere on the screen to summon your ghost at that location.
+
+- Triple-click again to dismiss it.
+- Supports up to three visit animation sheets.
+- Sometimes strolls near your mouse.
+- Walks back home after exploring.
+- Runs independently from the main activity overlay.
+
+## 🧠 Local AI Personality — Gemma 3
+
+GITM can optionally use **Gemma 3 through Ollama** to give your ghost a voice.
+
+Each action has two independent controls:
+
+| Setting | Behavior |
 |---|---|
-| Typing | Peeks from the left or right edge, or upside-down from the top. Stays while typing continues, then retreats. |
-| Copy | Plays a configured animation at your selected screen position. |
-| Drag / Move | Briefly follows the drag interaction. |
-| Idle | A soft ghost swarm can appear after inactivity. |
-| Pet | Triple-click to summon a companion that stays on your desktop. |
+| Show | Enables or disables the visual reaction |
+| Gemma | Enables or disables AI-generated dialogue |
 
-Every action has independent controls. Turn individual interactions on or off, configure their animations, and adjust cooldowns.
+When Gemma is disabled, the ghost stays silent.
 
-### 🐾 2. Your personal desktop pet
+When enabled, it can generate a short contextual line for the current action.
 
-Why should your ghost disappear every time?
+If Ollama is unavailable, GITM falls back to predefined lines from `assets/lines/`.
 
-The Pet system introduces a companion that can stay on your desktop independently of the main animation overlay.
+The AI integration is optional. GITM's core animations do not depend on it.
 
-- Triple-click anywhere to summon or dismiss.
-- Import up to three visit animation sheets.
-- Automatically cycle through available visit animations.
-- Occasionally stroll near the mouse.
-- Walk back to its original position.
-- Continue existing independently while other ghost animations play.
+## 🎨 Bring Your Own Sprites
 
-The pet has its own buddy overlay, so it doesn't prevent typing animations from appearing.
+GITM supports custom PNG sprite sheets.
 
-### 🗣️ 3. Give your ghost a voice with local AI
+Import a sprite sheet through Studio, configure its grid, and let the importer split it into individual frames.
 
-Sometimes a ghost should have something to say.
+The imported frames are saved as a horizontal animation strip with metadata.
 
-GITM optionally integrates with **Gemma 3 through Ollama**, allowing your companion to generate short contextual dialogue locally.
-
-- Enable or disable AI dialogue per action.
-- Generate one short line for an interaction.
-- Use local fallback dialogue when Ollama is unavailable.
-- Keep individual actions completely silent.
-- No external AI API key or cloud inference service is required.
-
-Optional model:
-
-```powershell
-ollama pull gemma3:1b
-```
-
-### 🎨 4. Bring your own characters and sprite sheets
-
-GITM is built around customizable sprite animations.
-
-Import SpriteForge-style PNG sheets directly through Studio. Configure the grid, extract frames, and generate the animation assets automatically.
+Example:
 
 ```text
 sprites/
@@ -105,11 +145,9 @@ sprites/
     ├── typing/
     │   ├── idle.png
     │   └── idle.json
-    │
     ├── copy/
     ├── drag/
     ├── idle/
-    │
     └── pet/
         └── visits/
             ├── 0/
@@ -117,295 +155,192 @@ sprites/
             └── 2/
 ```
 
-Customize:
-- Sprite sheet rows and columns.
-- Frame dimensions.
-- Animation speed.
-- Character size.
-- Overlay opacity.
-- Character-specific looks.
-- Pet visit animations.
+Missing sprite assets produce warnings instead of crashing the Engine.
 
-Missing sprites generate warnings instead of crashing the application.
+Your ghost, your art, your personality.
 
-### 🪟 5. A transparent, click-through overlay
+## 🏗️ Architecture
 
-Your ghost should never get in your way.
+```mermaid
+flowchart TD
+    A[Windows Desktop Activity] --> B[Activity Hooks]
+    B --> C[Event Name Only]
+    C --> D[Runtime Controller]
+    D --> E[Cooldowns and Show Settings]
+    E --> F[Sprite and Look Selection]
 
-The overlay is designed to be:
+    F --> G[Main Overlay]
+    F --> H[Pet Overlay]
 
-- Always on top.
-- Transparent.
-- Click-through.
-- Non-focus-stealing.
-- Independent of the application you're currently using.
+    G --> I[Animation Playback]
+    H --> I
 
-Your mouse interactions continue to reach the applications underneath.
+    D --> J[Optional Whisperer]
+    J --> K[Local Ollama]
+    K --> L[Gemma 3]
+    L --> M[Short Dialogue]
 
-### 🏆 6. Scores, badges and personality
+    J --> N[Fallback Lines]
+```
 
-Your companion has a little progression system.
+### Configuration
 
-GITM maintains local state for:
+GITM uses `config.yaml` for live configuration, including:
+
+- Action visibility.
+- Sprite configuration.
+- Cooldown durations.
+- Overlay settings.
+- Ollama configuration.
+- Character looks.
+
+The Electron Studio communicates with the Python Engine through `app/studio_bridge.py`, using JSON over standard input/output.
+
+A Windows mutex prevents multiple Engine instances from running simultaneously.
+
+## 🔒 Privacy by Design
+
+GITM is designed to keep its activity local.
+
+### What is stored locally?
+
+- Action counts.
+- Local progression scores.
+- Dust feature data.
+- Warnings and application logs.
+- Pet and look state.
+
+### What is NOT stored?
+
+- Typed text.
+- Clipboard contents.
+- Screen contents.
+- AI dialogue history.
+- Filenames in the dust scoring file.
+
+Clipboard change detection uses an in-memory hash that is discarded when the process exits.
+
+**Network behavior:** The optional AI integration communicates with a local Ollama instance. GITM does not require a cloud account or upload your activity data.
+
+## 👻 Local Progression & Seasonal Personality
+
+Your ghost has a little world of its own.
+
+GITM includes local progression features:
 
 - Ectoplasm.
 - Mood.
 - Candy.
 - Badges.
-- Action scores.
 
-It also supports seasonal visual themes:
-
-- October 31: Halloween-inspired visual effects.
-- November 1–2: Día de los Muertos-inspired marigold accents.
-
-Use `preview_date` in your configuration to test seasonal appearances.
-
-### 💾 7. Haunt the disk
-
-Your ghost can also help you inspect disk usage.
-
-Available through the system tray:
-
-- **Haunt the disk:** Lists heavy folders.
-- **Sweep temp:** Offers cleanup of temporary files, thumbnails, and Recycle Bin after confirmation.
-
-Important directories such as Windows, Cursor, Documents, and Desktop are never suggested for deletion.
-
-TabPFN-based scoring is optional and is not required to run GITM.
-
-### 🎭 8. Multiple projects and personalities
-
-One ghost doesn't have to be your only ghost.
-
-Studio supports multiple projects, each with its own action configuration, sprites, and looks.
-
-Create different experiences:
-
-- Halloween ghost.
-- Everyday desktop companion.
-- Custom character collections.
-- Different animation and interaction sets.
-
-Switch projects without rebuilding your entire setup.
-
----
-
-## 🛠️ Meet the two parts of GITM
-
-GITM is divided into two applications that work together.
-
-### 1. Studio — The creative workspace
-
-Built with Electron and React.
-
-Studio is where you design and configure your desktop companion.
-
-- Create and manage projects.
-- Enable or disable actions.
-- Import and configure sprite sheets.
-- Customize animation settings.
-- Control AI dialogue permissions.
-- Manage character looks.
-- Preview and save configurations.
-
-### 2. Engine — The ghost runtime
-
-Built with Python and Qt.
-
-The engine lives in the Windows system tray and manages the actual desktop interactions.
-
-- Monitors supported keyboard, mouse, clipboard, and folder events.
-- Emits event types rather than user content.
-- Applies action-specific cooldowns.
-- Selects the configured animations.
-- Manages transparent overlays.
-- Coordinates the optional local AI whisperer.
-- Maintains local application state.
-
----
-
-## 🧠 Architecture
+Its state is saved locally:
 
 ```text
-                    WINDOWS DESKTOP
-                           │
-                           ▼
-                 ┌───────────────────┐
-                 │    EVENT HOOKS    │
-                 │                   │
-                 │ Keyboard / Mouse  │
-                 │ Clipboard / Files │
-                 └─────────┬─────────┘
-                           │
-                           ▼
-                   EVENT NAME ONLY
-                  "typing", "copy"...
-                           │
-                           ▼
-                 ┌───────────────────┐
-                 │   RUNTIME MANAGER │
-                 │                   │
-                 │ Cooldowns         │
-                 │ Show permissions │
-                 │ Sprite selection │
-                 │ Looks / Behaviour│
-                 └─────────┬─────────┘
-                           │
-                 ┌─────────┴─────────┐
-                 ▼                   ▼
-          ┌─────────────┐     ┌─────────────┐
-          │ MAIN OVERLAY│     │BUDDY OVERLAY│
-          │             │     │             │
-          │ Typing      │     │ Pet         │
-          │ Copy        │     │ Visits      │
-          │ Idle        │     │ Movement    │
-          │ Drag        │     │             │
-          └──────┬──────┘     └──────┬──────┘
-                 │                   │
-                 └─────────┬─────────┘
-                           │
-                           ▼
-                   OPTIONAL WHISPERER
-                           │
-                           ▼
-                     LOCAL OLLAMA
-                        GEMMA 3
-                           │
-                           ▼
-                   SHORT AI DIALOGUE
+%APPDATA%\GhostInTheMachine\state.json
 ```
 
-### Studio-to-engine communication
+It can also change its visual personality according to the calendar:
 
-The Studio bridge (`app/studio_bridge.py`) communicates with Electron through JSON messages over stdin/stdout.
+- October 31 — Halloween tint.
+- November 1–2 — Día de los Muertos marigold theme.
 
-It allows the Studio to save looks, import sprite sheets, and update action settings without requiring manual engine restarts.
+Use `preview_date` to test seasonal appearances without changing your system date.
 
-### Configuration
+## 🧹 Disk Haunt
 
-`config.yaml` acts as the live control panel.
+GITM also includes an experimental disk-cleanup companion called **Haunt**.
 
-It manages:
+It can identify heavy folders and provide cleanup suggestions.
 
-- `show`
-- `sprites`
-- `cooldowns_ms`
-- `overlay`
-- `ollama`
-- `looks`
+The optional Sweep Temp action can clean selected temporary data, thumbnails, and the Recycle Bin after confirmation.
 
-A Windows mutex prevents multiple engine instances from running simultaneously.
+It does not suggest deleting sensitive locations such as:
 
----
+- Windows directories.
+- User profile directories.
+- Documents.
+- Desktop.
 
-## 🔐 Privacy by design
+Optional TabPFN-based scoring is included in the project requirements.
 
-GITM is designed to run locally.
-
-**It reacts to activity types, not the actual content of your activity.**
-
-| Information | Stored? |
-|---|---|
-| Action counts | Yes |
-| Scores and badges | Yes |
-| Dust feature table | Yes |
-| Application warnings | Yes |
-| Typed text | No |
-| Clipboard contents | No |
-| Screen contents | No |
-| File names in score storage | No |
-| Generated whisper lines | No |
-
-Clipboard change detection uses an in-memory hash that disappears when the process exits.
-
-### Network usage
-
-- No cloud account.
-- No remote AI API.
-- No activity uploads.
-- Optional AI communication with a local Ollama instance.
-
-Your application state is stored locally:
-
-```text
-%APPDATA%\GhostInTheMachine\
-```
-
-Your desktop should remain yours.
-
----
-
-## 🚀 Installation
+## 🚀 Getting Started
 
 ### Requirements
 
 - Windows.
 - Python.
 - Node.js and npm.
-- Ollama (optional, for AI dialogue).
+- Git (recommended).
 
-### Step 1 — Clone the repository
+### 1. Clone the repository
 
-```powershell
+```bash
 git clone YOUR_REPOSITORY_URL
-cd Ghost-in-the-Machine
+cd GITM
 ```
 
-### Step 2 — Set up Python
+Replace `YOUR_REPOSITORY_URL` with your actual repository URL.
+
+### 2. Create a Python environment
 
 ```powershell
 python -m venv .venv
+```
 
+### 3. Install Python dependencies
+
+```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-### Step 3 — Install Studio dependencies
+### 4. Install Studio dependencies
 
 ```powershell
 cd desktop
-
 npm install
-npm run build
+```
 
+### 5. Build Studio
+
+```powershell
+npm run build
+```
+
+Return to the project root:
+
+```powershell
 cd ..
 ```
 
-### Step 4 — Optional local AI setup
-
-Install Ollama and download Gemma 3:
-
-```powershell
-ollama pull gemma3:1b
-```
-
-This step is optional. GITM can run without local AI.
-
-### Step 5 — Launch GITM
+### 6. Launch GITM
 
 ```powershell
 .\GITM.bat
 ```
 
-This launches the Electron Studio and starts the Python engine in the system tray.
+This launches the Electron Studio and starts the Python Engine in the system tray.
 
-### Run the engine independently
+### Optional: Enable local AI dialogue
 
-```powershell
-.\.venv\Scripts\pythonw.exe main.py --engine
+Install [Ollama](https://ollama.com/) and pull Gemma 3:
+
+```bash
+ollama pull gemma3:1b
 ```
 
----
+Enable the Gemma option for your desired actions in Studio.
 
-## 🧪 Testing
+## 🧪 Running Tests
 
-Run the test suite:
+Run the project's Python tests:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest
 ```
 
-## 📦 Build a packaged application
+## 📦 Packaging for Windows
+
+Build a packaged executable using:
 
 ```powershell
 .\build_exe.ps1
@@ -421,34 +356,30 @@ dist/
     └── sprites/
 ```
 
----
+## 🎮 Quick Controls
 
-## 🎮 Quick controls
-
-| Action | How to use it |
+| Action | Result |
 |---|---|
-| Enable typing animation | Studio → Typing → Show ON |
-| Disable an action | Studio → Select action → Show OFF |
-| Silence an action | Turn its Gemma toggle OFF |
-| Summon your pet | Triple-click the desktop |
-| Dismiss your pet | Triple-click again |
-| Customize pet animations | Studio → Pet → Import visit sheets |
-| Pause all reactions | Tray → Pause |
-| Inspect disk usage | Tray → Haunt the disk |
-| Clean temporary files | Tray → Sweep temp |
+| Start typing | Typing animation |
+| Copy something | Copy reaction |
+| Drag or move | Drag reaction |
+| Stay idle | Idle animation |
+| Triple-click | Summon pet |
+| Triple-click again | Dismiss pet |
+| Tray → Pause | Pause the Engine |
+| Studio → Show off | Disable a specific visual reaction |
+| Studio → Gemma off | Disable AI dialogue for that action |
 
----
-
-## 📂 Project structure
+## 📁 Project Structure
 
 ```text
 GITM/
 │
 ├── main.py
 ├── GITM.bat
-├── build_exe.ps1
 ├── config.yaml
 ├── requirements.txt
+├── build_exe.ps1
 │
 ├── app/
 │   ├── hooks/
@@ -464,61 +395,64 @@ GITM/
 ├── sprites/
 │   └── characters/
 │
-├── assets/
-│   ├── icons/
-│   ├── lines/
-│   └── dust/
-│
-└── tests/
+└── assets/
+    ├── icons/
+    ├── lines/
+    └── dust/
 ```
 
-Runtime state and logs are maintained separately under:
+### Local Application Data
+
+GITM stores its application state and logs under:
 
 ```text
 %APPDATA%\GhostInTheMachine\
 ```
 
----
+This includes:
 
-## 🗺️ What's next?
+- `state.json`
+- `app.log`
+- `look.json`
+- Dust history.
+- Pet state.
 
-GITM is an evolving experiment in making desktop interactions feel more alive.
+## 🛣️ Roadmap
 
-Some directions for future development:
+Some areas that can be expanded in future versions:
 
-- More character behaviours and animation types.
-- Better sprite authoring and animation previews.
-- Additional local AI personalities.
-- More seasonal events and collectible badges.
-- More customizable interaction triggers.
-- Expanded character and animation collections.
-
----
+- [ ] More built-in character personalities.
+- [ ] More animation presets and reactions.
+- [ ] Expanded sprite customization.
+- [ ] Additional local AI personality options.
+- [ ] More interactive pet behaviors.
+- [ ] Improved seasonal events and progression.
+- [ ] More desktop activity reactions.
 
 ## 🤝 Contributing
 
-Have an interesting ghost character? A new animation? An idea for a desktop interaction?
+Contributions, ideas, sprite packs, and feedback are welcome!
 
-Contributions, suggestions, bug reports, and custom sprite packs are welcome.
+If you have an interesting character, animation, or idea for a new reaction, feel free to contribute.
 
-Feel free to open an issue or submit a pull request.
+You can help by:
+
+- Creating new sprite sheets.
+- Improving animation behavior.
+- Suggesting new desktop interactions.
+- Improving local AI dialogue.
+- Reporting bugs and performance issues.
+
+## ❤️ The Idea Behind GITM
+
+Your computer doesn't have to feel lifeless.
+
+Sometimes, a tiny ghost appearing at the right moment is enough to make an ordinary desktop feel a little more alive.
+
+**Ghost in the Machine — A little ghost living inside your machine.**
 
 ---
 
-## 👻 The philosophy
-
-Computers are great at responding to commands.
-
-But what if they could respond with a little personality?
-
-GITM is a small experiment in making everyday computing feel a little less mechanical.
-
-**Not another assistant. Not another notification. Just a ghost that knows when you're busy.**
-
 <p align="center">
-  <strong>👻 Ghost in the Machine</strong>
-  <br>
-  <em>A little ghost for your everyday machine.</em>
-  <br><br>
-  <a href="https://youtu.be/Od1qMNbtQxE">Watch the demo</a>
+  Made with 👻 and a little bit of ectoplasm.
 </p>
