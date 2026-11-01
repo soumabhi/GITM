@@ -1,0 +1,12 @@
+kind,size_mb,age_days,on_c,name_has_cache,label
+cache,1875,20,1,1,sweep
+cache,363,20,1,1,sweep
+cache,603,20,1,1,sweep
+cache,2179,40,0,1,sweep
+cache,5047,30,0,1,sweep
+runtime,242,15,1,0,sweep
+browser_cache,45,10,1,1,sweep
+chat,5806,90,1,0,keep
+editor,8094,5,1,0,keep
+plugins,488,60,1,0,keep
+windows,900,200,1,0,keep

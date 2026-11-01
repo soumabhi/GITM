@@ -1,0 +1,7 @@
+{
+  "image": "00.png",
+  "frameWidth": 887,
+  "frameHeight": 887,
+  "frames": 2,
+  "layout": "horizontal strip, frame N at x = N * frameWidth"
+}

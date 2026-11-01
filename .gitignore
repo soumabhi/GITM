@@ -1,0 +1,35 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tmp/
+build/
+dist/
+*.egg-info/
+
+# Local model / runtime caches (large)
+models/
+ollama/
+.tabpfn-cache/
+tabpfn-cache/
+
+# Desktop deps and build output
+desktop/node_modules/
+desktop/dist/
+
+# Secrets / local env
+.env
+.env.*
+!.env.example
+*.pem
+credentials.json
+
+# OS / editor
+Thumbs.db
+Desktop.ini
+.DS_Store
+.idea/
+.vscode/
+*.log

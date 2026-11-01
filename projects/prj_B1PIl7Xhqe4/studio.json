@@ -1,0 +1,54 @@
+{
+  "actions": [
+    {
+      "id": "typing",
+      "name": "typing",
+      "show": true
+    },
+    {
+      "id": "copy",
+      "name": "copy",
+      "show": true
+    },
+    {
+      "id": "paste",
+      "name": "paste",
+      "show": false
+    },
+    {
+      "id": "delete",
+      "name": "delete",
+      "show": false
+    },
+    {
+      "id": "enter",
+      "name": "enter",
+      "show": false
+    },
+    {
+      "id": "screenshot",
+      "name": "screenshot",
+      "show": false
+    },
+    {
+      "id": "scroll",
+      "name": "scroll",
+      "show": false
+    },
+    {
+      "id": "idle",
+      "name": "idle",
+      "show": true
+    },
+    {
+      "id": "move",
+      "name": "move",
+      "show": true
+    },
+    {
+      "id": "pet",
+      "name": "pet",
+      "show": true
+    }
+  ]
+}

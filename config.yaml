@@ -1,0 +1,186 @@
+enabled: true
+overlay:
+  size: 242
+  margin: 16
+  corner: top-right
+  opacity: 1.0
+  x: 100
+  y: 0
+  ask: true
+  question: Write anything you like but small enough to fit in 20 words.
+  say: ''
+preview_date: ''
+sprites:
+  pack: sprites
+  typing: typing
+  copy: copy
+  paste: paste
+  delete: delete
+  move: move
+  halloween_typing: ''
+  cut: ''
+  undo: ''
+  redo: ''
+  save: ''
+  select_all: ''
+  find: ''
+  enter: enter
+  backspace: ''
+  escape: ''
+  screenshot: screenshot
+  click: ''
+  right_click: ''
+  double_click: ''
+  scroll: scroll
+  new_file: ''
+  rename: ''
+  download: ''
+  alt_tab: ''
+  alt_f4: alt_f4
+  idle: idle
+  pet: pet
+cooldowns_ms:
+  typing: 3000
+  copy: 1500
+  paste: 1500
+  delete: 1000
+  enter: 1500
+  screenshot: 2000
+  scroll: 1500
+  idle: 20000
+  move: 2000
+  alt_f4: 2000
+  pet: 2500
+animation:
+  play_ms: 2500
+  hold_ms: 500
+  fade_ms: 300
+ollama:
+  url: http://127.0.0.1:11434
+  model: gemma3:1b
+  timeout_s: 45
+  min_interval_s: 30
+  enabled: true
+dust:
+  warn_below_gb: 15
+  tabpfn_cache_dir: D:/tabpfn-cache
+  sweep_min_prob: 0.7
+watch:
+  extra_dirs:
+  - D:/Downloads
+show:
+  typing: true
+  copy: true
+  paste: false
+  delete: false
+  enter: false
+  screenshot: false
+  scroll: false
+  idle: true
+  move: true
+  alt_f4: false
+  cut: true
+  undo: true
+  redo: true
+  save: true
+  select_all: true
+  find: true
+  backspace: true
+  escape: true
+  click: true
+  right_click: true
+  double_click: true
+  new_file: true
+  rename: true
+  download: true
+  alt_tab: true
+  pet: true
+looks:
+  typing:
+    size: 242
+    opacity: 1.0
+    x: 100
+    y: 0
+    ask: false
+    question: Write anything you like but small enough to fit in 20 words.
+    speed: 193
+  move:
+    size: 242
+    opacity: 1.0
+    x: 100
+    y: 46
+    ask: false
+    question: Write anything you like but small enough to fit in 20 words.
+    speed: 100
+  pet:
+    size: 131
+    opacity: 1.0
+    x: 92
+    y: 78
+    ask: false
+    question: Write anything you like but small enough to fit in 20 words.
+    speed: 100
+  copy:
+    size: 242
+    opacity: 1.0
+    x: 100
+    y: 0
+    ask: true
+    question: Write anything you like but small enough to fit in 20 words.
+    speed: 100
+  paste:
+    size: 242
+    opacity: 1.0
+    x: 100
+    y: 0
+    ask: false
+    question: Write anything you like but small enough to fit in 20 words.
+    speed: 100
+  delete:
+    size: 242
+    opacity: 1.0
+    x: 100
+    y: 0
+    ask: false
+    question: Write anything you like but small enough to fit in 20 words.
+    speed: 100
+  enter:
+    size: 242
+    opacity: 1.0
+    x: 100
+    y: 0
+    ask: false
+    question: Write anything you like but small enough to fit in 20 words.
+    speed: 100
+  screenshot:
+    size: 242
+    opacity: 1.0
+    x: 100
+    y: 0
+    ask: false
+    question: Write anything you like but small enough to fit in 20 words.
+    speed: 100
+  scroll:
+    size: 242
+    opacity: 1.0
+    x: 100
+    y: 0
+    ask: false
+    question: Write anything you like but small enough to fit in 20 words.
+    speed: 100
+  idle:
+    size: 242
+    opacity: 0.89
+    x: 100
+    y: 0
+    ask: false
+    question: Write anything you like but small enough to fit in 20 words.
+    speed: 141
+  alt_f4:
+    size: 242
+    opacity: 1.0
+    x: 100
+    y: 0
+    ask: false
+    question: Write anything you like but small enough to fit in 20 words.
+    speed: 100

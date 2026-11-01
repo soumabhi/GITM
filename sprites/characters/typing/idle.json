@@ -1,0 +1,8 @@
+{
+  "image": "idle.png",
+  "frameWidth": 443,
+  "frameHeight": 443,
+  "frames": 8,
+  "style": "detailed",
+  "layout": "horizontal strip, frame N at x = N * frameWidth"
+}
