@@ -93,6 +93,8 @@ class Runtime(QObject):
         animation = cfg.get("animation") or {}
         overlay_cfg = cfg.get("overlay") or {}
         self.overlay = self._make_overlay(overlay_cfg, animation)
+        # Separate window so typing/copy keep working while the pet stays parked.
+        self.buddy = self._make_overlay(overlay_cfg, animation)
         ollama = cfg.get("ollama") or {}
         self.model_name = str(ollama.get("model", "gemma3:1b"))
         self.whisper = Whisperer(
@@ -245,11 +247,48 @@ class Runtime(QObject):
         if hasattr(self.overlay, "is_showing") and self.overlay.is_showing() and hasattr(self.overlay, "begin_leave"):
             self.overlay.begin_leave()
 
+    def _toggle_pet(self) -> None:
+        shown = self.cfg.get("show") or {}
+        if shown.get("pet", True) is False:
+            return
+        look = self._look_for("pet")
+        if hasattr(self.buddy, "pet_parked") and self.buddy.pet_parked():
+            self.buddy.dismiss_pet()
+            log.info("Pet dismissed")
+            return
+        sheets = self.library.pet_visit_sets() if hasattr(self.library, "pet_visit_sets") else []
+        if not sheets:
+            log.warning("No sprite frames for pet")
+            return
+        point = getattr(self.mouse, "_pet_at", None)
+        screen = QApplication.primaryScreen()
+        if point is None or screen is None:
+            return
+        area = screen.availableGeometry()
+        across = max(0.0, min(100.0, (point[0] - area.x()) / max(1, area.width()) * 100))
+        down = max(0.0, min(100.0, (point[1] - area.y()) / max(1, area.height()) * 100))
+        if hasattr(self.buddy, "apply_look"):
+            self.buddy.apply_look(int(look["size"]), float(look["opacity"]), across, down)
+        if hasattr(self.buddy, "set_pace"):
+            self.buddy.set_pace(int(look.get("speed", 100)))
+        if hasattr(self.buddy, "set_swarm"):
+            self.buddy.set_swarm(False)
+        if hasattr(self.buddy, "set_push"):
+            self.buddy.set_push(False)
+        self.buddy.park_pet(sheets, across, down)
+        self.economy.record("pet")
+        log.info("Pet parked at %.0f,%.0f with %s sheets", across, down, len(sheets))
+
     def _on_event(self, name: str) -> None:
         if name == "presence":
             self._wake()
             return
         if name == "candy":
+            return
+        if name == "pet":
+            if self.cfg.get("enabled", True) is False or self.paused or self.hidden:
+                return
+            self._toggle_pet()
             return
         if name not in BY_ID:
             return
@@ -270,6 +309,8 @@ class Runtime(QObject):
             return
         if allowed and name != "idle":
             self._last_event = moment
+            if hasattr(self, "buddy") and hasattr(self.buddy, "maybe_wander"):
+                self.buddy.maybe_wander()
         if allowed:
             self.economy.record(name)
             self._announce(self.economy.newly_unlocked(self.now()))
@@ -285,7 +326,11 @@ class Runtime(QObject):
                     "Ghost window mein PNG drop karo",
                 )
         look = self._look_for(name)
-        if hasattr(self.overlay, "apply_look") and name != "pet":
+        if name == "typing":
+            if hasattr(self.overlay, "apply_look"):
+                # Keep size/opacity; peek owns on-screen placement (no Across/Down).
+                self.overlay.apply_look(int(look["size"]), float(look["opacity"]), 50, 50)
+        elif hasattr(self.overlay, "apply_look"):
             self.overlay.apply_look(int(look["size"]), float(look["opacity"]), float(look["x"]), float(look["y"]))
         if hasattr(self.overlay, "set_pace"):
             self.overlay.set_pace(int(look.get("speed", 100)))
@@ -297,10 +342,8 @@ class Runtime(QObject):
         if not frames:
             log.warning("Skip play for %s; no frames", name)
             return
-        if name == "pet" and hasattr(self.overlay, "start_visit"):
-            if hasattr(self.overlay, "apply_look"):
-                self.overlay.apply_look(int(look["size"]), float(look["opacity"]), float(look.get("x", 92)), float(look.get("y", 78)))
-            self.overlay.start_visit(frames, float(look.get("x", 92)), float(look.get("y", 78)))
+        if name == "typing" and hasattr(self.overlay, "start_peek"):
+            self.overlay.start_peek(frames)
         elif showing and hasattr(self.overlay, "adopt"):
             self.overlay.adopt(frames)
         else:
@@ -487,6 +530,8 @@ class Runtime(QObject):
         self.whisper.timeout_s = float(ollama.get("timeout_s", 45))
         if cfg.get("enabled", True) is False:
             self.overlay.hide_ghost()
+            if hasattr(self, "buddy") and hasattr(self.buddy, "dismiss_pet"):
+                self.buddy.dismiss_pet()
         overlay_cfg = cfg.get("overlay") or {}
         if hasattr(self.overlay, "apply_look"):
             self.overlay.apply_look(
@@ -501,6 +546,8 @@ class Runtime(QObject):
         self.hidden = not self.hidden
         if self.hidden:
             self.overlay.hide_ghost()
+            if hasattr(self, "buddy") and hasattr(self.buddy, "dismiss_pet"):
+                self.buddy.dismiss_pet()
         self.tray.set_hidden(self.hidden)
 
     def toggle_paused(self, _checked: bool = False) -> None:

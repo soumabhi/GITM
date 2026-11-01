@@ -356,8 +356,6 @@ def pet_state() -> dict:
 
 
 def pet_image(body: dict) -> dict:
-    from app.sheet_import import knock_out_green, save_character
-
     slot = str(body.get("slot") or "")
     if slot not in {"0", "1", "2"}:
         return {"error": "Choose visit 1, 2, or 3."}
@@ -373,14 +371,8 @@ def pet_image(body: dict) -> dict:
     source = Path(str(body.get("path") or ""))
     if source.suffix.lower() != ".png" or not source.exists():
         return {"error": "PNG only"}
-    image = knock_out_green(Image.open(source).convert("RGBA"))
-    if image.width >= int(image.height * 1.8):
-        count = max(1, round(image.width / image.height))
-        frame_w = max(1, image.width // count)
-        frames = [image.crop((index * frame_w, 0, (index + 1) * frame_w, image.height)) for index in range(count)]
-    else:
-        frames = [image]
-    save_character(frames, place)
+    # Auto-detect 2×2 / 4×2 / strip so one character shows, not the whole sheet.
+    import_dropped([source], place, 0, 0)
     return pet_state()
 
 

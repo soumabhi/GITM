@@ -305,7 +305,7 @@ function PetVisits({ speed, busy, onStatus }) {
   return (
     <div className="pet-visits">
       <p className="pet-visit-help">
-        Drop up to 3 PNGs. Double-click the desktop to call the pet — it picks one at random, comes to your mouse, hangs around, then goes home.
+        Drop up to 3 PNGs. Triple-click to spawn or dismiss. It cycles those sheets, stays at the spawn spot, sometimes slowly walks near your mouse, then slowly goes home.
       </p>
       <div className="pet-visit-grid">
         {slots.map((slot, index) => {
@@ -451,7 +451,7 @@ function Dials({ look, actionId, onLook, onAsking }) {
     }
     fire();
   }
-  const placed = actionId !== "move" && actionId !== "idle" && actionId !== "pet";
+  const placed = actionId !== "move" && actionId !== "idle" && actionId !== "pet" && actionId !== "typing";
   const rows = [
     ["size", "Size", 80, 420],
     ["opacity", "Opacity", 20, 100],

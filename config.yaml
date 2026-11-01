@@ -125,7 +125,7 @@ looks:
     opacity: 1.0
     x: 100
     y: 0
-    ask: true
+    ask: false
     question: Write anything you like but small enough to fit in 20 words.
     speed: 100
   paste:
@@ -170,7 +170,7 @@ looks:
     speed: 100
   idle:
     size: 242
-    opacity: 0.89
+    opacity: 0.97
     x: 100
     y: 0
     ask: false

@@ -22,7 +22,8 @@ class MouseHook:
         self._last_emit = 0.0
         self._last_presence = 0.0
         self._last_xy: tuple[int, int] | None = None
-        self._last_click = 0.0
+        self._click_times: list[float] = []
+        self._pet_at: tuple[int, int] | None = None
         self._listener = mouse.Listener(on_click=self._on_click, on_move=self._on_move, on_scroll=self._on_scroll)
 
     def start(self) -> None:
@@ -56,14 +57,16 @@ class MouseHook:
             self._down = (int(x), int(y), time.monotonic())
             self._fired = False
             return
-        # Double-click (not a drag) calls the pet so a normal click can still focus apps.
+        # Triple-click (not a drag) toggles the pet on/off at that spot.
         if self._down is not None and not self._fired and not pressed:
             now = time.monotonic()
-            if now - self._last_click <= 0.35:
+            x0, y0, _started = self._down
+            self._click_times = [stamp for stamp in self._click_times if now - stamp <= 0.5]
+            self._click_times.append(now)
+            if len(self._click_times) >= 3:
+                self._pet_at = (x0, y0)
                 self._emit("pet")
-                self._last_click = 0.0
-            else:
-                self._last_click = now
+                self._click_times = []
         self._down = None
         self._fired = False
 

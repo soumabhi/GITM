@@ -6,7 +6,7 @@ $python = "D:\GIMM\.venv\Scripts\python.exe"
 & $python -m pip install pyinstaller
 & $python -m PyInstaller --noconfirm --windowed --name GITM --onedir `
   --distpath "D:\GIMM\dist" --workpath "D:\GIMM\build" `
-  --icon "D:\GIMM\assets\icons\app.png" `
+  --icon "D:\GIMM\assets\icons\app.ico" `
   --add-data "assets;assets" --add-data "config.yaml;." --add-data "sprites;sprites" `
   --exclude-module PySide6.QtWebEngine --exclude-module PySide6.QtWebEngineCore `
   --exclude-module PySide6.QtWebEngineWidgets --exclude-module PySide6.QtPdf `

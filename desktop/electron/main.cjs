@@ -7,6 +7,14 @@ const readline = require("readline");
 const ROOT = path.resolve(__dirname, "..", "..");
 const PYTHON = path.join(ROOT, ".venv", "Scripts", "python.exe");
 const PYTHONW = path.join(ROOT, ".venv", "Scripts", "pythonw.exe");
+const APP_ICON = path.join(ROOT, "assets", "icons", "app.ico");
+const APP_ICON_PNG = path.join(ROOT, "assets", "icons", "app.png");
+
+function resolveIcon() {
+  if (fs.existsSync(APP_ICON)) return APP_ICON;
+  if (fs.existsSync(APP_ICON_PNG)) return APP_ICON_PNG;
+  return undefined;
+}
 
 let bridge = null;
 let engineStarting = false;
@@ -97,6 +105,7 @@ function startEngine() {
 }
 
 function createWindow() {
+  const icon = resolveIcon();
   const win = new BrowserWindow({
     width: 1100,
     height: 760,
@@ -105,6 +114,7 @@ function createWindow() {
     backgroundColor: "#fbfbfa",
     title: "GITM",
     autoHideMenuBar: true,
+    ...(icon ? { icon } : {}),
     webPreferences: {
       preload: path.join(__dirname, "preload.cjs"),
       contextIsolation: true,
@@ -162,6 +172,10 @@ if (!locked) {
     win.show();
     win.focus();
   });
+  app.setName("GITM");
+  if (process.platform === "win32") {
+    app.setAppUserModelId("com.gitm.desktop");
+  }
   app.whenReady().then(() => {
     startBridge();
     startEngine();

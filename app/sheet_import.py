@@ -60,11 +60,35 @@ def save_character(frames: list[Image.Image], folder: Path) -> Path:
     return image_path
 
 
+def guess_grid(image: Image.Image) -> tuple[int, int]:
+    """Pick a sheet layout from the image shape."""
+    width, height = image.size
+    if width <= 0 or height <= 0:
+        return 1, 1
+    ratio = width / height
+    # Long horizontal strip of square cells.
+    if ratio >= 2.6:
+        return max(1, round(width / height)), 1
+    # Classic ChatGPT 4×2 export (~2:1).
+    if 1.7 <= ratio <= 2.4:
+        return 4, 2
+    # Square-ish sheet → usually 2×2 poses.
+    if 0.75 <= ratio <= 1.35:
+        return 2, 2
+    cols = max(1, round(width / height))
+    return cols, 1
+
+
 def import_dropped(paths: list[Path], folder: Path, cols: int, rows: int) -> Path:
     images = [knock_out_green(Image.open(path).convert("RGBA")) for path in paths if path.suffix.lower() == ".png"]
     if not images:
         raise ValueError("drop a png")
-    frames = slice_grid(images[0], cols, rows) if len(images) == 1 else [knock_out_green(image) for image in images]
+    if len(images) == 1:
+        if cols <= 0 or rows <= 0:
+            cols, rows = guess_grid(images[0])
+        frames = slice_grid(images[0], cols, rows)
+    else:
+        frames = [knock_out_green(image) for image in images]
     return save_character(frames, folder)
 
 

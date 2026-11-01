@@ -99,7 +99,8 @@ class SpriteLibrary:
 
     def frames_for(self, event: str, pumpkin: bool) -> list[Image.Image]:
         if event == "pet":
-            return self.pet_visit_frames()
+            sets = self.pet_visit_sets()
+            return sets[0] if sets else []
         if event == "typing" and pumpkin:
             holiday = self._load_named(self.mapping.get("halloween_typing", "pumpkin"))
             if holiday:
@@ -108,10 +109,8 @@ class SpriteLibrary:
         name = self.mapping.get(event, "")
         return self._load_named(name)
 
-    def pet_visit_frames(self) -> list[Image.Image]:
-        """Pick one of up to three visit sheets at random. Falls back to pet/idle."""
-        import random
-
+    def pet_visit_sets(self) -> list[list[Image.Image]]:
+        """All filled visit sheets, in order. Falls back to pet/idle."""
         options: list[list[Image.Image]] = []
         root = self.pack / "characters" / "pet" / "visits"
         for index in range(3):
@@ -119,8 +118,9 @@ class SpriteLibrary:
             if frames:
                 options.append(frames)
         if options:
-            return random.choice(options)
-        return self._load_named(self.mapping.get("pet", "pet"))
+            return options
+        fallback = self._load_named(self.mapping.get("pet", "pet"))
+        return [fallback] if fallback else []
 
     def _load_named(self, name: str) -> list[Image.Image]:
         if not name:

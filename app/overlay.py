@@ -102,8 +102,21 @@ class GhostOverlay(QWidget):
         self._visit = ""
         self._visit_at = 0.0
         self._visit_follow_until = 0.0
+        self._wander_after = 0.0
+        self._pet_sheets: list[list[Image.Image]] = []
+        self._pet_sheet_i = 0
+        self._sheet_until = 0.0
+        self._follow_target: tuple[float, float] | None = None
+        self._follow_sample_at = 0.0
         self._home_across = 100.0
         self._home_down = 80.0
+        self._peek = ""
+        self._peek_kind = ""
+        self._peek_rot = 0.0
+        self._peek_x = 0.0
+        self._peek_y = 0.0
+        self._peek_hold: tuple[float, float] = (0.0, 0.0)
+        self._peek_exit: tuple[float, float] = (0.0, 0.0)
         self.setFixedSize(size, size)
         self.setWindowFlags(
             Qt.WindowType.FramelessWindowHint
@@ -206,6 +219,7 @@ class GhostOverlay(QWidget):
             self._sources = []
             return
         self._visit = ""
+        self._clear_peek()
         self._sources = ready
         self._caption = ""
         self._full = ""
@@ -220,8 +234,16 @@ class GhostOverlay(QWidget):
             self._fill_copies()
         self.note_activity()
 
-    def start_visit(self, frames: list[Image.Image], home_across: float, home_down: float) -> None:
-        """Come from a fixed home, hang by the mouse, then leave."""
+    def _clear_peek(self) -> None:
+        self._peek = ""
+        self._peek_kind = ""
+        self._peek_rot = 0.0
+
+    def peeking(self) -> bool:
+        return bool(self._peek) and self._phase != "hidden"
+
+    def start_peek(self, frames: list[Image.Image], kind: str | None = None) -> None:
+        """Slide partly on-screen from an edge, hold, then slide out."""
         ready = [frame.convert("RGBA") for frame in frames if frame is not None]
         if not ready:
             return
@@ -229,11 +251,159 @@ class GhostOverlay(QWidget):
         self._leaving = False
         self._push = False
         self._copies = []
-        self._home_across = max(0.0, min(100.0, float(home_across)))
-        self._home_down = max(0.0, min(100.0, float(home_down)))
-        self._across = self._home_across
-        self._down = self._home_down
+        self._visit = ""
+        self._caption = ""
+        self._full = ""
+        self._shown = 0
+        self._line_done_at = 0.0
+        self._live = False
+        self._awaiting_line = False
         self._sources = ready
+        # Keep peeking if already out (or sliding away); only refresh the sheet.
+        if self._peek in {"enter", "hold", "exit"} and self._frames:
+            self._present(ready, restart=False, fast=True)
+            self._peek = "hold"
+            self._peek_x, self._peek_y = self._peek_hold
+            self.move(int(round(self._peek_x)), int(round(self._peek_y)))
+            self.note_activity()
+            return
+        # top = always upside-down (frame top / head enters first).
+        # left/right = slanted so upper body leads in; feet stay off the edge.
+        kinds = ("left", "right", "top")
+        chosen = kind if kind in kinds else random.choice(kinds)
+        self._peek_kind = chosen
+        # Qt rotate is clockwise. Put the sprite's head on the on-screen side.
+        self._peek_rot = {
+            "left": 78.0,    # head on the right (slides into the desktop first)
+            "right": -78.0,  # head on the left (slides into the desktop first)
+            "top": 180.0,    # upside-down; head dips into the screen first
+        }[chosen]
+        self._frame_clock = 0.0
+        self._present(ready, restart=True)
+        start, hold, exit_to = self._peek_targets()
+        self._peek_x, self._peek_y = start
+        self._peek_hold = hold
+        self._peek_exit = exit_to
+        self._peek = "enter"
+        self.move(int(round(self._peek_x)), int(round(self._peek_y)))
+        self.note_activity()
+        self.show()
+        self.raise_()
+        self.update()
+
+    def _peek_targets(self) -> tuple[tuple[float, float], tuple[float, float], tuple[float, float]]:
+        area = self._screen_area()
+        if area is None:
+            return (0.0, 0.0), (0.0, 0.0), (0.0, 0.0)
+        left = float(area.left())
+        top = float(area.top())
+        width = float(area.width())
+        height = float(area.height())
+        right = left + width
+        fw = float(max(1, self.width()))
+        fh = float(max(1, self.height()))
+        # Same peek depth on every edge — enough to read the face, not a full walk-on.
+        visible = random.uniform(0.42, 0.52)
+        kind = self._peek_kind
+        if kind == "left":
+            y = top + height * random.uniform(0.18, 0.55)
+            hold = (left - fw * (1.0 - visible), y)
+            start = (left - fw - 8.0, y)
+            exit_to = (left - fw - 8.0, y)
+            return start, hold, exit_to
+        if kind == "right":
+            y = top + height * random.uniform(0.18, 0.55)
+            hold = (right - fw * visible, y)
+            start = (right + 8.0, y)
+            exit_to = (right + 8.0, y)
+            return start, hold, exit_to
+        # Upside-down from the top: frame top (head) enters first; feet stay above.
+        x = left + width * random.uniform(0.18, 0.72) - fw * 0.5
+        x = min(max(left - fw * 0.2, x), right - fw * 0.8)
+        hold = (x, top - fh * (1.0 - visible))
+        start = (x, top - fh - 8.0)
+        exit_to = (x, top - fh - 8.0)
+        return start, hold, exit_to
+
+    def _lerp_pixel(self, tx: float, ty: float, step: float) -> float:
+        dx = tx - self._peek_x
+        dy = ty - self._peek_y
+        dist = math.hypot(dx, dy)
+        if dist <= 0.5:
+            self._peek_x = tx
+            self._peek_y = ty
+            self.move(int(round(self._peek_x)), int(round(self._peek_y)))
+            return 0.0
+        move = min(dist, step)
+        self._peek_x += dx / dist * move
+        self._peek_y += dy / dist * move
+        self.move(int(round(self._peek_x)), int(round(self._peek_y)))
+        return dist - move
+
+    def _step_peek(self, now: float) -> bool:
+        if not self._peek:
+            return False
+        if self._peek == "enter":
+            left = self._lerp_pixel(self._peek_hold[0], self._peek_hold[1], 14.0)
+            self._opacity = 1.0
+            self.setWindowOpacity(self._strength)
+            if left <= 1.0:
+                self._peek = "hold"
+                self._peek_x, self._peek_y = self._peek_hold
+                self.move(int(round(self._peek_x)), int(round(self._peek_y)))
+            self.update()
+            return True
+        if self._peek == "hold":
+            self._peek_x, self._peek_y = self._peek_hold
+            self.move(int(round(self._peek_x)), int(round(self._peek_y)))
+            active = now < self._active_until or self._writing() or self._awaiting_line
+            if self._full and self._line_done_at and now - self._line_done_at >= 2.0:
+                active = False
+            if active:
+                self._stay()
+                return True
+            self._peek = "exit"
+            return True
+        if self._peek == "exit":
+            left = self._lerp_pixel(self._peek_exit[0], self._peek_exit[1], 16.0)
+            self._opacity = 1.0
+            self.setWindowOpacity(self._strength)
+            self.update()
+            if left <= 1.0:
+                self._clear_peek()
+                self.hide_ghost()
+            return True
+        return False
+
+    def pet_parked(self) -> bool:
+        return bool(self._visit) and self._phase != "hidden"
+
+    def dismiss_pet(self) -> None:
+        self._visit = ""
+        self._pet_sheets = []
+        self._follow_target = None
+        self.hide_ghost()
+
+    def park_pet(self, sheets: list[list[Image.Image]], across: float, down: float) -> None:
+        """Stay at the spawn spot; cycle every visit PNG; sometimes stroll to the mouse."""
+        cleaned: list[list[Image.Image]] = []
+        for sheet in sheets or []:
+            ready = [frame.convert("RGBA") for frame in sheet if frame is not None]
+            if ready:
+                cleaned.append(ready)
+        if not cleaned:
+            return
+        self._swarm = False
+        self._leaving = False
+        self._push = False
+        self._copies = []
+        self._across = max(0.0, min(100.0, float(across)))
+        self._down = max(0.0, min(100.0, float(down)))
+        self._home_across = self._across
+        self._home_down = self._down
+        self._pet_sheets = cleaned
+        self._pet_sheet_i = 0
+        self._follow_target = None
         self._caption = ""
         self._full = ""
         self._shown = 0
@@ -242,13 +412,45 @@ class GhostOverlay(QWidget):
         self._source = ""
         self._awaiting_line = False
         self._frame_clock = 0.0
-        self._visit = "approach"
-        self._visit_at = time.monotonic()
+        now = time.monotonic()
+        self._visit = "park"
+        self._visit_at = now
         self._visit_follow_until = 0.0
-        self._present(ready, restart=True)
-        self._active_until = time.monotonic() + 12.0
-        self.note_activity()
-        self._active_until = time.monotonic() + 12.0
+        self._wander_after = now + random.uniform(20.0, 40.0)
+        self._apply_pet_sheet(0, restart=True)
+        self._phase = "holding"
+        self._active_until = now + 1e9
+
+    def _apply_pet_sheet(self, index: int, restart: bool) -> None:
+        if not self._pet_sheets:
+            return
+        self._pet_sheet_i = index % len(self._pet_sheets)
+        ready = self._pet_sheets[self._pet_sheet_i]
+        self._sources = ready
+        self._present(ready, restart=restart, fast=True)
+        self._phase = "holding"
+        self._active_until = time.monotonic() + 1e9
+        # Play through this sheet once, then move to the next PNG.
+        span = (self._base_play_ms / 1000) / max(0.25, self._pace)
+        self._sheet_until = time.monotonic() + max(1.2, span)
+
+    def _cycle_pet_sheet(self, now: float) -> None:
+        if len(self._pet_sheets) < 2 or now < self._sheet_until:
+            return
+        self._apply_pet_sheet(self._pet_sheet_i + 1, restart=True)
+
+    def maybe_wander(self) -> None:
+        """Sometimes stroll toward the mouse, hang nearby, then walk home."""
+        if self._visit != "park" or self._phase == "hidden":
+            return
+        now = time.monotonic()
+        if now < getattr(self, "_wander_after", 0):
+            return
+        self._visit = "seek"
+        self._visit_at = now
+        self._follow_target = None
+        self._follow_sample_at = 0.0
+        self._active_until = now + 1e9
 
     def _present(self, ready: list[Image.Image], restart: bool, fast: bool = False) -> None:
         native = ready[0].size
@@ -283,7 +485,9 @@ class GhostOverlay(QWidget):
             self._preview_until = 0.0
             self._timer.start(33)
         self.setWindowOpacity(self._opacity * self._strength)
-        if self._swarm:
+        if self._peek:
+            self.move(int(round(self._peek_x)), int(round(self._peek_y)))
+        elif self._swarm:
             if len(self._copies) < 5:
                 self._fill_copies()
         elif self._push and time.monotonic() < self._push_until:
@@ -598,6 +802,7 @@ class GhostOverlay(QWidget):
         self._visit = ""
         self._visit_at = 0.0
         self._visit_follow_until = 0.0
+        self._clear_peek()
         self._timer.stop()
         self._preview_until = 0.0
         self._fit_key = None
@@ -628,41 +833,61 @@ class GhostOverlay(QWidget):
         self._place()
         return dist - move
 
+    def _near_mouse(self, now: float) -> tuple[float, float]:
+        """A soft point beside the cursor — not glued on top of it."""
+        cx, cy = self._cursor_percent()
+        # Refresh the aim only now and then so the pet trails instead of sticking.
+        if self._follow_target is None or now - self._follow_sample_at >= 0.35:
+            self._follow_target = (
+                max(0.0, min(100.0, cx - 12.0)),
+                max(0.0, min(100.0, cy + 8.0)),
+            )
+            self._follow_sample_at = now
+        return self._follow_target
+
     def _step_visit(self, now: float) -> bool:
         if not self._visit:
             return False
-        if self._visit == "approach":
-            tx, ty = self._cursor_percent()
-            # Sit a little behind/beside the cursor, not on top of it.
-            tx = max(0.0, min(100.0, tx - 6))
-            ty = max(0.0, min(100.0, ty + 4))
-            left = self._lerp_toward(tx, ty, 3.2)
-            self._active_until = max(self._active_until, now + 1.0)
-            if left <= 2.5 or now - self._visit_at > 4.0:
+        self._active_until = now + 1e9
+        self._cycle_pet_sheet(now)
+        if self._visit == "park":
+            self._across = self._home_across
+            self._down = self._home_down
+            self._place()
+            self._stay()
+            if now >= getattr(self, "_wander_after", now + 1):
+                self.maybe_wander()
+            return True
+        if self._visit == "seek":
+            tx, ty = self._near_mouse(now)
+            left = self._lerp_toward(tx, ty, 1.35)
+            if left <= 3.0 or now - self._visit_at > 10.0:
                 self._visit = "follow"
                 self._visit_at = now
-                self._visit_follow_until = now + 2.8
+                self._visit_follow_until = now + random.uniform(3.5, 6.0)
+                self._follow_target = None
             self._stay()
             return True
         if self._visit == "follow":
-            tx, ty = self._cursor_percent()
-            tx = max(0.0, min(100.0, tx - 5))
-            ty = max(0.0, min(100.0, ty + 3))
-            self._lerp_toward(tx, ty, 4.5)
-            self._active_until = max(self._active_until, now + 0.6)
+            tx, ty = self._near_mouse(now)
+            self._lerp_toward(tx, ty, 1.1)
             if now >= self._visit_follow_until:
-                self._visit = "leave"
+                self._visit = "return"
                 self._visit_at = now
+                self._follow_target = None
             self._stay()
             return True
-        if self._visit == "leave":
-            left = self._lerp_toward(self._home_across, self._home_down, 3.6)
-            self._active_until = max(self._active_until, now + 0.4)
-            if left <= 2.0 or now - self._visit_at > 3.5:
-                self._visit = ""
-                self.hide_ghost()
-            else:
-                self._stay()
+        if self._visit == "return":
+            left = self._lerp_toward(self._home_across, self._home_down, 1.35)
+            if left <= 2.0 or now - self._visit_at > 12.0:
+                self._across = self._home_across
+                self._down = self._home_down
+                self._place()
+                self._visit = "park"
+                self._visit_at = now
+                self._wander_after = now + random.uniform(25.0, 55.0)
+                self._follow_target = None
+            self._stay()
             return True
         return False
 
@@ -723,6 +948,13 @@ class GhostOverlay(QWidget):
         if self._visit and self._step_visit(now):
             self._advance_frames(now)
             return
+        if self._peek:
+            if self._awaiting_line and now >= self._await_until:
+                self._awaiting_line = False
+            self._reveal(now)
+            self._advance_frames(now)
+            if self._step_peek(now):
+                return
         if self._push and now < self._push_until and not self._swarm and not self._leaving:
             self._stick()
         if self._leaving:
@@ -791,7 +1023,17 @@ class GhostOverlay(QWidget):
                     painter.restore()
             else:
                 frame = self._frames[min(self._frame_index, len(self._frames) - 1)]
-                painter.drawPixmap(QRect(self._sprite_x, 0, self._frame_w, self._frame_h), frame)
+                if self._peek and abs(self._peek_rot) > 0.01:
+                    painter.save()
+                    cx = self._sprite_x + self._frame_w / 2
+                    cy = self._frame_h / 2
+                    painter.translate(cx, cy)
+                    painter.rotate(self._peek_rot)
+                    painter.translate(-self._frame_w / 2, -self._frame_h / 2)
+                    painter.drawPixmap(QRect(0, 0, self._frame_w, self._frame_h), frame)
+                    painter.restore()
+                else:
+                    painter.drawPixmap(QRect(self._sprite_x, 0, self._frame_w, self._frame_h), frame)
         painter.end()
 
     def _mono(self) -> QFont:
