@@ -13,8 +13,8 @@ No cloud account. No permanent mascot covering your screen. Just a tiny ghost th
 ## 🎬 Watch GITM in Action
 
 <p align="center">
-  <a href="https://youtu.be/mtokemH5_Vg">
-    <img src="https://img.youtube.com/vi/mtokemH5_Vg/maxresdefault.jpg" width="85%" alt="Ghost in the Machine - Demo 1">
+  <a href="https://youtu.be/ZEorU3n0zzk">
+    <img src="https://img.youtube.com/vi/ZEorU3n0zzk/maxresdefault.jpg" width="85%" alt="Ghost in the Machine - Demo 1">
   </a>
   <br>
   <strong>▶ Watch Demo 1</strong>
